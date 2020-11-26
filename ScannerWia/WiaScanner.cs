@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using WIA;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ScannerTwain
@@ -63,33 +62,6 @@ namespace ScannerTwain
             _fileName = fileName;
 
             ConnectAndScanImage();
-        }
-
-        private DeviceInfo FindFirstScanner()
-        {
-            var deviceManager = new DeviceManager();
-            DeviceInfo firstScannerAvailable = null;
-
-            try
-            {
-                for (var i = 1; i < deviceManager.DeviceInfos.Count; i++)
-                {
-                    if (deviceManager.DeviceInfos[i].Type != WiaDeviceType.ScannerDeviceType)
-                    {
-                        continue;
-                    }
-
-                    firstScannerAvailable = deviceManager.DeviceInfos[i];
-                    break;
-                }
-            }
-            catch (COMException e)
-            {
-                var errorCode = (uint) e.ErrorCode;
-                PrintError(errorCode);
-            }
-
-            return firstScannerAvailable;
         }
 
         private void ConnectAndScanImage()
@@ -173,7 +145,7 @@ namespace ScannerTwain
                 }
 
                 imageFile.SaveFile(_path);
-                Console.WriteLine("File saved to: " + _path);
+                Console.WriteLine(@"File saved to: " + _path);
             }
             catch (COMException e)
             {
@@ -199,7 +171,7 @@ namespace ScannerTwain
                 }
 
                 imageFile.SaveFile(_path);
-                Console.WriteLine("File saved to: " + _path);
+                Console.WriteLine(@"File saved to: " + _path);
             }
             catch (COMException e)
             {
@@ -225,7 +197,7 @@ namespace ScannerTwain
                 }
 
                 imageFile.SaveFile(_path);
-                Console.WriteLine("File saved to: " + _path);
+                Console.WriteLine(@"File saved to: " + _path);
             }
             catch (COMException e)
             {
@@ -251,7 +223,7 @@ namespace ScannerTwain
                 }
 
                 imageFile.SaveFile(_path);
-                Console.WriteLine("File saved to: " + _path);
+                Console.WriteLine(@"File saved to: " + _path);
             }
             catch (COMException e)
             {
@@ -266,9 +238,8 @@ namespace ScannerTwain
         /// <returns></returns>
         public static IEnumerable<WIADeviceInfo> GetDevices()
         {
-            var devices = new List<string>();
-            var manager = new WIA.DeviceManager();
-            foreach (WIA.DeviceInfo info in manager.DeviceInfos)
+            var manager = new DeviceManager();
+            foreach (DeviceInfo info in manager.DeviceInfos)
             {
                 yield return new WIADeviceInfo(info.DeviceID, (string)info.Properties[WIADeviceInfoProp.Manufacturer].get_Value());
             }

@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WIA;
 
 namespace ScannerTwain
 {
     public partial class ScannerWindowForm : Form
     {
-        List<WIADeviceInfo> devices;
+        private List<WIADeviceInfo> _devices;
 
         public ScannerWindowForm()
         {
@@ -26,9 +22,9 @@ namespace ScannerTwain
         {
             scannerListBox.Items.Clear();
 
-            devices = WiaScanner.GetDevices().ToList();
+            _devices = WiaScanner.GetDevices().ToList();
 
-            foreach (var device in devices)
+            foreach (var device in _devices)
             {
                 scannerListBox.Items.Add(device.Name);
             }
@@ -70,42 +66,39 @@ namespace ScannerTwain
             deviceInfo.DeviceID = null;
             deviceInfo.Name = null;
 
-            this.Invoke(new MethodInvoker(delegate()
+            Invoke(new MethodInvoker(delegate
             {
                 if (scannerListBox.Items.Count == 0)
                 {
                     ShowSelectDeviceMessageBox();
-                    
-                    return;
                 }
                 else
                 {
-                    WIADeviceInfo info = devices[scannerListBox.SelectedIndex];
+                    WIADeviceInfo info = _devices[scannerListBox.SelectedIndex];
                     deviceInfo.DeviceID = info.DeviceID;
                     deviceInfo.Name = info.Name;
                 }
             }));
 
-            WiaScanner device = new WiaScanner();
-            if (String.IsNullOrEmpty(outputFolderTextBox.Text))
+            var device = new WiaScanner();
+            if (string.IsNullOrEmpty(outputFolderTextBox.Text))
             {
                 ShowNoFileNameMessageBox();
                 return;
             }
 
-            ImageFile image = new ImageFile();
-            int fileFormat = 1; //ok
-            int colorMode = 1; //ok
-            int resolution = 100; //ok
-            int brightness = 0; //ok
-            int contrast = 0; //ok
-            int bitDepth = 24; //ok
-            string fileExtension = ""; //ok
+            var fileFormat = 1;
+            var colorMode = 1;
+            var resolution = 100;
+            var brightness = 0;
+            var contrast = 0;
+            var bitDepth = 24;
+            var fileExtension = "";
             int widthPixels;
             int heightPixels;
 
 
-            this.Invoke(new MethodInvoker(delegate()
+            Invoke(new MethodInvoker(delegate
             {
                 switch (colorModeComboBox.SelectedIndex)
                 {
@@ -147,7 +140,7 @@ namespace ScannerTwain
                 contrast = int.Parse(contrastTextBox.Text);
             }));
 
-            this.Invoke(new MethodInvoker(delegate()
+            this.Invoke(new MethodInvoker(delegate
             {
                 widthPixels = (int) (8.3f * resolution);
                 heightPixels = (int) (11.7f * resolution);
@@ -166,13 +159,13 @@ namespace ScannerTwain
 
         private void ShowSelectDeviceMessageBox()
         {
-            MessageBox.Show("You need to select a scanner from the list", "Warning",
+            MessageBox.Show(@"You need to select a scanner from the list", @"Warning",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void ShowNoFileNameMessageBox()
         {
-            MessageBox.Show("Provide a file name", "Warning", MessageBoxButtons.OK,
+            MessageBox.Show(@"Provide a file name", @"Warning", MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
     }
