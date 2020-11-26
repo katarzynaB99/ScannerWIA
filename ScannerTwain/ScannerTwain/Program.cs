@@ -16,7 +16,7 @@ namespace ScannerTwain
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ScannerWindowForm());
+            Application.Run(new Form1());
         }
     }
 }
